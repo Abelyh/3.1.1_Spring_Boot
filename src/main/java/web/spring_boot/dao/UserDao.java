@@ -5,6 +5,7 @@ package web.spring_boot.dao;
 import web.spring_boot.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao {
 
@@ -16,5 +17,5 @@ public interface UserDao {
 
     void delete(User user);
 
-    User getById(Long id);
+    Optional<User> getById(Long id);
 }

@@ -1,6 +1,7 @@
 package web.spring_boot.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import web.spring_boot.model.User;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,9 +38,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(Long id, User updateUser) {
         User userById = getById(id);
-        if (userById == null) {
-            throw new EntityNotFoundException();
-        }
         userById.setName(updateUser.getName());
         userById.setLastName(updateUser.getLastName());
         userById.setAge(updateUser.getAge());
@@ -50,15 +49,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void delete(Long id) {
         User userById = getById(id);
-        if (userById == null) {
-           throw new EntityNotFoundException(String.valueOf(id));
-        }
         userDao.delete(userById);
     }
 
     @Override
     @Transactional(readOnly = true)
     public User getById(Long id) {
-        return userDao.getById(id);
+        return userDao.getById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Entity with id " + id + " not found"));
     }
 }
